@@ -1,0 +1,24 @@
+{
+  "name": "library-api",
+  "version": "1.0.0",
+  "description": "Library management API for mobile barcode scanning",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": ["library", "api", "barcode", "scanner"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.0",
+    "pg": "^8.14.0",
+    "@supabase/supabase-js": "^2.108.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}

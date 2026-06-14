@@ -9,7 +9,6 @@ import { ReturnPage } from './pages/return/ReturnPage'
 import { ReportsPage } from './pages/reports/ReportsPage'
 import { NotificationsPage } from './pages/notifications/NotificationsPage'
 import { SettingsPage } from './pages/settings/SettingsPage'
-import { ScannerPage } from './pages/scanner/ScannerPage'
 import { ScanCodePage } from './pages/scanner/ScanCodePage'
 import { ScannerReaderPopup } from './pages/scanner/ScannerReaderPopup'
 
@@ -28,7 +27,6 @@ export default function App() {
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/scanner" element={<ScannerPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

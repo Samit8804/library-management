@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Plus, Pencil, Trash2, Search } from 'lucide-react'
+import { Plus, Pencil, Trash2, Search, ScanLine } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
@@ -12,6 +12,7 @@ import { Badge } from '../../components/ui/Badge'
 import { Modal } from '../../components/ui/Modal'
 import { Table } from '../../components/ui/Table'
 import { getBooks, searchBooks, createBook, updateBook, deleteBook } from '../../lib/db'
+import { lookupIsbn } from '../../lib/utils'
 import type { Book } from '../../types'
 
 const bookSchema = z.object({
@@ -42,6 +43,35 @@ export function BooksPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editingBook, setEditingBook] = useState<Book | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [scanningIsbn, setScanningIsbn] = useState(false)
+
+  useEffect(() => {
+    function handleMessage(e: MessageEvent) {
+      if (e.data?.type === 'BARCODE_SCANNED' && e.data?.barcode && !editingBook) {
+        setScanningIsbn(true)
+        resetForm()
+        setModalOpen(true)
+        lookupIsbn(e.data.barcode)
+          .then((info) => {
+            if (info) {
+              form.setValue('isbn', info.isbn)
+              form.setValue('title', info.title)
+              form.setValue('author', info.author)
+              form.setValue('publisher', info.publisher)
+            }
+          })
+          .catch(() => toast.error('Failed to look up book info'))
+          .finally(() => setScanningIsbn(false))
+      }
+    }
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [editingBook])
+
+  function openBarcodeScanner() {
+    const w = window.open('/scanner-reader', 'BarcodeScanner', 'width=500,height=700,scrollbars=no')
+    if (!w) toast.error('Popup blocked. Allow popups for this site.')
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -193,6 +223,10 @@ export function BooksPage() {
         <Button onClick={openAddModal}>
           <Plus className="h-4 w-4" />
           Add Book
+        </Button>
+        <Button onClick={openBarcodeScanner} variant="secondary" loading={scanningIsbn}>
+          <ScanLine className="h-4 w-4" />
+          Scan Barcode
         </Button>
       </div>
 

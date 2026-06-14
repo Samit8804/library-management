@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, BookOpen, Users, BookUp, BookDown,
-  FileText, Bell, Settings, ScanLine, X,
+  FileText, Bell, Settings, X,
 } from 'lucide-react'
 
 const navItems = [
@@ -10,7 +10,6 @@ const navItems = [
   { to: '/books', label: 'Books', icon: BookOpen },
   { to: '/issue', label: 'Issue Book', icon: BookUp },
   { to: '/return', label: 'Return Book', icon: BookDown },
-  { to: '/scanner', label: 'Scanner', icon: ScanLine },
   { to: '/reports', label: 'Reports', icon: FileText },
   { to: '/notifications', label: 'Notifications', icon: Bell },
   { to: '/settings', label: 'Settings', icon: Settings },

@@ -2,10 +2,19 @@ import { create } from 'zustand'
 import { supabase } from './supabase'
 import type { Profile } from '../types'
 
+const GUEST_PROFILE: Profile = {
+  id: 'guest',
+  email: 'guest@library',
+  full_name: 'Guest',
+  role: 'guest',
+  created_at: new Date().toISOString(),
+}
+
 interface AuthState {
   profile: Profile | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
+  signInAsGuest: () => void
   signOut: () => Promise<void>
   loadProfile: () => Promise<void>
 }
@@ -27,6 +36,9 @@ export const useAuth = create<AuthState>((set) => ({
         .single()
       set({ profile: profile as Profile })
     }
+  },
+  signInAsGuest: () => {
+    set({ profile: GUEST_PROFILE })
   },
   signOut: async () => {
     await supabase.auth.signOut()

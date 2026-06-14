@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { getBookByBookId, getBookByIsbn, getStudentByFormNumber } from '../../lib/db'
 import { Card, CardContent } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
-import { BookOpen, User, ArrowLeft, CheckCircle, XCircle } from 'lucide-react'
+import { BookOpen, User, CheckCircle, XCircle, Home } from 'lucide-react'
 import type { Book, Student } from '../../types'
 
-type ScanResult = 
+type ScanResult =
   | { type: 'book'; data: Book }
   | { type: 'student'; data: Student }
   | null
 
 export function ScanCodePage() {
-  const { code } = useParams<{ code: string }>()
+  const { code: pathCode } = useParams<{ code: string }>()
+  const [searchParams] = useSearchParams()
+  const queryCode = searchParams.get('code')
+  const code = pathCode || queryCode
+
   const [result, setResult] = useState<ScanResult>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -26,14 +30,17 @@ export function ScanCodePage() {
       return
     }
 
+    const numeric = c.replace(/[^0-9]/g, '')
+    const isIsbn = numeric.length >= 12 && /^\d+$/.test(numeric)
+
     async function lookup(code: string) {
       try {
         if (code.startsWith('B')) {
           const book = await getBookByBookId(code)
           if (book) setResult({ type: 'book', data: book })
           else setError(`Book "${code}" not found`)
-        } else if (/^\d{12,13}$/.test(code)) {
-          const book = await getBookByIsbn(code)
+        } else if (isIsbn) {
+          const book = await getBookByIsbn(numeric)
           if (book) setResult({ type: 'book', data: book })
           else {
             const student = await getStudentByFormNumber(code)
@@ -80,10 +87,18 @@ export function ScanCodePage() {
               <CheckCircle className="h-6 w-6 text-green-500 mx-auto mb-2" />
               <h2 className="text-xl font-bold mb-1">{result.data.title}</h2>
               <p className="text-gray-600 mb-1">{result.data.author}</p>
-              <p className="text-sm text-gray-500 mb-4">ID: {result.data.book_id}</p>
+              <p className="text-sm text-gray-500 mb-4">ID: {result.data.book_id} | ISBN: {result.data.isbn}</p>
               <Badge variant={result.data.available_copies > 0 ? 'success' : 'danger'}>
                 {result.data.available_copies > 0 ? 'Available' : 'Issued'}
               </Badge>
+              <div className="flex gap-2 mt-4">
+                <Link to={`/issue`} className="flex-1">
+                  <Button className="w-full">Issue Book</Button>
+                </Link>
+                <Link to="/books" className="flex-1">
+                  <Button variant="secondary" className="w-full">View Details</Button>
+                </Link>
+              </div>
             </div>
           )}
 
@@ -101,13 +116,17 @@ export function ScanCodePage() {
           )}
 
           <div className="mt-6 text-center">
-            <Link to="/scanner">
+            <Link to="/dashboard">
               <Button variant="secondary">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Scanner
+                <Home className="h-4 w-4 mr-2" />
+                Back to Dashboard
               </Button>
             </Link>
           </div>
+
+          <p className="text-xs text-gray-400 text-center mt-4">
+            Scan a barcode with any scanner app to look up a book or student.
+          </p>
         </CardContent>
       </Card>
     </div>

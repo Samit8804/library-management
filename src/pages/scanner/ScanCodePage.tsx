@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { getBookByBookId, getBookByIsbn, getStudentByFormNumber, createBook } from '../../lib/db'
-import { lookupIsbn } from '../../lib/utils'
 import { Card, CardContent } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
@@ -26,10 +25,8 @@ export function ScanCodePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
-  const [preview, setPreview] = useState<{
-    isbn: string; title: string; author: string; publisher: string
-  } | null>(null)
 
+  const [isbn, setIsbn] = useState('')
   const [editTitle, setEditTitle] = useState('')
   const [editAuthor, setEditAuthor] = useState('')
   const [editPublisher, setEditPublisher] = useState('')
@@ -62,20 +59,11 @@ export function ScanCodePage() {
             setTimeout(() => navigate(`/issue?isbn=${numeric}`), 1500)
             return
           }
-          const student = await getStudentByFormNumber(code)
-          if (student) { setResult({ type: 'student', data: student }); setLoading(false); return }
-          const info = await lookupIsbn(numeric)
-          if (info) {
-            setPreview(info)
-            setEditTitle(info.title)
-            setEditAuthor(info.author)
-            setEditPublisher(info.publisher)
-            setEditCategory('General')
-            setEditShelf('')
-            setEditBookId(`B-${numeric.slice(-4)}`)
-            setLoading(false)
-            return
-          }
+          setIsbn(numeric)
+          setEditBookId(`B-${numeric.slice(-4)}`)
+          setEditCategory('General')
+          setLoading(false)
+          return
         }
         const student = await getStudentByFormNumber(code)
         if (student) setResult({ type: 'student', data: student })
@@ -91,15 +79,15 @@ export function ScanCodePage() {
   }, [code])
 
   async function handleCreate() {
-    if (!preview) return
+    if (!isbn) return
     setSaving(true)
     try {
       await createBook({
-        book_id: editBookId || `B-${preview.isbn.slice(-4)}`,
-        isbn: preview.isbn,
-        title: editTitle || preview.title,
-        author: editAuthor || preview.author,
-        publisher: editPublisher || preview.publisher,
+        book_id: editBookId || `B-${isbn.slice(-4)}`,
+        isbn,
+        title: editTitle || 'Untitled',
+        author: editAuthor || 'Unknown',
+        publisher: editPublisher || 'Unknown',
         category: editCategory || 'General',
         edition: '',
         shelf_number: editShelf,
@@ -107,7 +95,7 @@ export function ScanCodePage() {
         available_copies: 1,
       })
       toast.success('Book added!')
-      navigate(`/issue?isbn=${preview.isbn}`)
+      navigate(`/issue?isbn=${isbn}`)
     } catch {
       toast.error('Failed to save')
     } finally {
@@ -164,17 +152,17 @@ export function ScanCodePage() {
             </div>
           )}
 
-          {preview && (
+          {isbn && !result && (
             <div className="py-4 text-left">
-              <h2 className="text-lg font-semibold mb-1">Book not in library</h2>
-              <p className="text-sm text-gray-500 mb-4">Review details from OpenLibrary, then save:</p>
+              <h2 className="text-lg font-semibold mb-1">Add New Book</h2>
+              <p className="text-sm text-gray-500 mb-4">ISBN detected — enter the details below:</p>
               <div className="space-y-3">
                 <Input label="Book ID" value={editBookId} onChange={(e) => setEditBookId(e.target.value)} />
-                <Input label="ISBN" value={preview.isbn} disabled />
-                <Input label="Title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
-                <Input label="Author" value={editAuthor} onChange={(e) => setEditAuthor(e.target.value)} />
-                <Input label="Publisher" value={editPublisher} onChange={(e) => setEditPublisher(e.target.value)} />
-                <Input label="Category" value={editCategory} onChange={(e) => setEditCategory(e.target.value)} />
+                <Input label="ISBN" value={isbn} disabled />
+                <Input label="Title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Book title" />
+                <Input label="Author" value={editAuthor} onChange={(e) => setEditAuthor(e.target.value)} placeholder="Author name" />
+                <Input label="Publisher" value={editPublisher} onChange={(e) => setEditPublisher(e.target.value)} placeholder="Publisher" />
+                <Input label="Category" value={editCategory} onChange={(e) => setEditCategory(e.target.value)} placeholder="e.g. Fiction, Science, History" />
                 <Input label="Shelf Number" value={editShelf} onChange={(e) => setEditShelf(e.target.value)} placeholder="e.g. A-12" />
               </div>
               <div className="flex gap-2 mt-4">

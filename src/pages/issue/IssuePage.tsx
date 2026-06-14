@@ -74,7 +74,7 @@ export function IssuePage() {
   const issueMutation = useMutation({
     mutationFn: () => {
       if (!selectedStudent || !selectedBook || !profile) throw new Error('Missing data')
-      return issueBook(selectedStudent.id, selectedBook.id, profile.id, dueDate)
+      return issueBook(selectedStudent.id, selectedBook.book_id, profile.id, dueDate)
     },
     onSuccess: () => {
       toast.success('Book issued successfully')

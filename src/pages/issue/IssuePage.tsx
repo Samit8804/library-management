@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { useSearchParams } from 'react-router-dom'
 import { Search, User, BookOpen, Calendar, AlertCircle, CheckCircle, ArrowRight, X, ScanLine } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { addDays, format } from 'date-fns'
@@ -8,12 +9,13 @@ import { Input } from '../../components/ui/Input'
 import { Card, CardContent, CardHeader } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
 import { useAuth } from '../../lib/auth'
-import { searchStudents, searchBooks, issueBook } from '../../lib/db'
+import { searchStudents, searchBooks, issueBook, getBookByIsbn } from '../../lib/db'
 import { formatDate } from '../../lib/utils'
 import type { Student, Book } from '../../types'
 
 export function IssuePage() {
   const { profile } = useAuth()
+  const [searchParams] = useSearchParams()
 
   const [studentQuery, setStudentQuery] = useState('')
   const [students, setStudents] = useState<Student[]>([])
@@ -38,6 +40,21 @@ export function IssuePage() {
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
   }, [])
+
+  useEffect(() => {
+    const isbn = searchParams.get('isbn')
+    if (isbn) {
+      setBookQuery(isbn)
+      getBookByIsbn(isbn)
+        .then((book) => {
+          if (book) {
+            setBooks([book])
+            setSelectedBook(book)
+          }
+        })
+        .catch(() => {})
+    }
+  }, [searchParams])
 
   async function handleBookSearch(barcodeValue?: string) {
     const query = (barcodeValue ?? bookQuery).trim()

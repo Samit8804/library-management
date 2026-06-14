@@ -243,6 +243,16 @@ export function BooksPage() {
             />
           </div>
 
+          <details className="mb-4 text-sm text-gray-500">
+            <summary className="cursor-pointer hover:text-gray-700">Using an external barcode scanner app?</summary>
+            <div className="mt-2 p-3 bg-gray-50 rounded-lg text-xs space-y-1">
+              <p>Install <strong>QR &amp; Barcode Scanner</strong> from Play Store.</p>
+              <p>Set URL template to: <code className="bg-gray-200 px-1 rounded">https://library-management-flame-iota.vercel.app/scan/%s</code></p>
+              <p>When you scan a book, it will open the site and look up the book by ISBN.</p>
+              <p>To add new books, use the <strong>Scan Barcode</strong> button above instead.</p>
+            </div>
+          </details>
+
           <Table
             columns={[
               { key: 'book_id', header: 'Book ID' },

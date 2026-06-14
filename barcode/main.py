@@ -18,11 +18,13 @@ from supabase_client import SupabaseClient
 
 app = FastAPI(title="EAN-13 Barcode Scanner", version="1.0.0")
 
-origins_str = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:5174")
+origins_str = os.getenv("CORS_ORIGINS",
+    "http://localhost:5173,http://localhost:5174,https://library-management-flame-iota.vercel.app")
 origins = [o.strip() for o in origins_str.split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=r"https?://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

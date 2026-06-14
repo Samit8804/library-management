@@ -10,6 +10,7 @@ import { Input } from '../../components/ui/Input'
 import { Select } from '../../components/ui/Select'
 import { Badge } from '../../components/ui/Badge'
 import { getBookByBookId, getBookByIsbn, getStudentByFormNumber } from '../../lib/db'
+import { barcodeUrl } from '../../lib/config'
 import type { Book, Student } from '../../types'
 
 type ScanResult = { type: 'book'; data: Book } | { type: 'student'; data: Student } | null
@@ -206,7 +207,7 @@ export function ScannerPage() {
 
           const formData = new FormData()
           formData.append('file', new File([blob], 'frame.jpg', { type: 'image/jpeg' }))
-          const res = await fetch('/api/barcode/scan', { method: 'POST', body: formData })
+          const res = await fetch(barcodeUrl('/scan'), { method: 'POST', body: formData })
           const data = await res.json()
 
           if (data.success && data.barcode) {

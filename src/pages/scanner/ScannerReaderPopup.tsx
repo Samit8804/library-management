@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { ScanLine, Camera, CameraOff, XCircle } from 'lucide-react'
+import { barcodeUrl } from '../../lib/config'
 
 export function ScannerReaderPopup() {
   const [scanning, setScanning] = useState(false)
@@ -90,7 +91,7 @@ export function ScannerReaderPopup() {
 
           const formData = new FormData()
           formData.append('file', new File([blob], 'frame.jpg', { type: 'image/jpeg' }))
-          const res = await fetch('/api/barcode/scan', { method: 'POST', body: formData })
+          const res = await fetch(barcodeUrl('/scan'), { method: 'POST', body: formData })
           const data = await res.json()
 
           if (data.success && data.barcode) {

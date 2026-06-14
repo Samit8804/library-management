@@ -6,6 +6,7 @@ import os
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 
@@ -16,6 +17,17 @@ from decoder import decode_barcode
 from supabase_client import SupabaseClient
 
 app = FastAPI(title="EAN-13 Barcode Scanner", version="1.0.0")
+
+origins_str = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:5174")
+origins = [o.strip() for o in origins_str.split(",") if o.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 db = SupabaseClient()
 
 

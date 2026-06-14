@@ -4,7 +4,7 @@ import os
 class SupabaseClient:
     def __init__(self, url=None, key=None):
         self.url = url or os.getenv("SUPABASE_URL")
-        self.key = key or os.getenv("SUPABASE_KEY")
+        self.key = key or os.getenv("SUPABASE_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY")
         self.client = None
         self._initialized = False
         if self.url and self.key:

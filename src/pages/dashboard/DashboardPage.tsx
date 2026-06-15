@@ -178,7 +178,7 @@ export function DashboardPage() {
               <Badge variant="info" className="text-[10px]">6 months</Badge>
             </CardHeader>
             <CardContent className="p-5">
-              <div className="h-64">
+              <div className="h-64 min-w-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={monthlyData}>
                     <defs>
@@ -208,7 +208,7 @@ export function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent className="p-5">
-              <div className="h-64">
+              <div className="h-64 min-w-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={bookCategories} cx="50%" cy="50%" innerRadius={55} outerRadius={90}
@@ -298,7 +298,7 @@ export function DashboardPage() {
                   <p className="text-[10px] text-text-muted uppercase">Inactive</p>
                 </div>
               </div>
-              <div className="h-32">
+              <div className="h-32 min-w-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={studentStats.byCourse}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />

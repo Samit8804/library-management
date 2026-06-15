@@ -86,7 +86,7 @@ export async function getStudentByFormNumber(formNumber: string) {
 export async function getTransactions() {
   const { data } = await supabase
     .from('transactions')
-    .select('*, student:students(*), book:books(*)')
+    .select('*, student:students(*), book:books!book_uuid(*)')
     .order('created_at', { ascending: false })
   return data as Transaction[]
 }
@@ -94,7 +94,7 @@ export async function getTransactions() {
 export async function getStudentTransactions(studentId: string) {
   const { data } = await supabase
     .from('transactions')
-    .select('*, book:books(*)')
+    .select('*, book:books!book_uuid(*)')
     .eq('student_id', studentId)
     .order('created_at', { ascending: false })
   return data as Transaction[]
@@ -103,7 +103,7 @@ export async function getStudentTransactions(studentId: string) {
 export async function getActiveTransactions() {
   const { data } = await supabase
     .from('transactions')
-    .select('*, student:students(*), book:books(*)')
+    .select('*, student:students(*), book:books!book_uuid(*)')
     .in('status', ['issued', 'overdue'])
     .order('created_at', { ascending: false })
   return data as Transaction[]
@@ -150,7 +150,7 @@ export async function getSetting(key: string) {
 }
 
 export async function updateSetting(key: string, value: string) {
-  const { data } = await supabase.from('settings').upsert({ key, value }).select().single()
+  const { data } = await supabase.from('settings').upsert({ key, value }, { onConflict: 'key' }).select().single()
   return data as Setting
 }
 

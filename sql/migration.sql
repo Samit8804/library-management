@@ -189,6 +189,22 @@ CREATE POLICY "Admin can update settings"
   ON settings FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
 
+-- Email logs policies
+CREATE POLICY "Authenticated users can read email_logs"
+  ON email_logs FOR SELECT TO authenticated USING (true);
+
+CREATE POLICY "Authenticated users can insert email_logs"
+  ON email_logs FOR INSERT TO authenticated
+  WITH CHECK (true);
+
+-- Notifications policies
+CREATE POLICY "Authenticated users can read notifications"
+  ON notifications FOR SELECT TO authenticated USING (true);
+
+CREATE POLICY "Authenticated users can insert notifications"
+  ON notifications FOR INSERT TO authenticated
+  WITH CHECK (true);
+
 -- Function: Issue book
 CREATE OR REPLACE FUNCTION issue_book(
   p_student_id UUID,

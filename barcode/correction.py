@@ -50,7 +50,7 @@ def correct_and_extract(image, rect, box):
     rotated, angle = correct_rotation(image, rect)
     roi = extract_barcode_region(rotated, box)
     if roi.shape[0] > 0 and roi.shape[1] > 0:
-        roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY) if len(roi.shape) == 3 else roi
-        _, roi_binary = cv2.threshold(roi_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        return roi_binary
+        if len(roi.shape) == 3:
+            roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        return roi
     return roi

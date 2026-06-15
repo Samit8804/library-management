@@ -50,25 +50,66 @@ def validate_checksum(barcode_str):
     return expected == digits[12]
 
 
+def decode_zbar(barcode_image):
+    try:
+        from pyzbar.pyzbar import decode as zbar_decode
+        from pyzbar.pyzbar import ZBarSymbol
+    except ImportError:
+        return None, 0.0
+    if barcode_image is None or barcode_image.size == 0:
+        return None, 0.0
+    gray = barcode_image
+    if len(gray.shape) == 3:
+        gray = cv2.cvtColor(gray, cv2.COLOR_BGR2GRAY)
+    results = zbar_decode(gray, symbols=[ZBarSymbol.EAN13, ZBarSymbol.EAN8,
+                                          ZBarSymbol.CODE128, ZBarSymbol.CODE39,
+                                          ZBarSymbol.QRCODE])
+    if results:
+        barcode_str = results[0].data.decode('utf-8')
+        barcode_str = barcode_str.replace('-', '').replace(' ', '')
+        return barcode_str, 90.0
+    results = zbar_decode(gray)
+    if results:
+        barcode_str = results[0].data.decode('utf-8')
+        barcode_str = barcode_str.replace('-', '').replace(' ', '')
+        return barcode_str, 85.0
+    return None, 0.0
+
+
 def _extract_scanline(binary_image):
     h, w = binary_image.shape[:2]
-    middle_y = h // 2
-    scanline = binary_image[middle_y, :]
-    if len(scanline.shape) > 1:
-        scanline = np.mean(scanline, axis=1)
+    lines = []
+    offsets = [0, -1, 1, -2, 2]
+    for off in offsets:
+        y = h // 2 + off
+        if 0 <= y < h:
+            line = binary_image[y, :]
+            if len(line.shape) > 1:
+                line = np.mean(line, axis=1)
+            lines.append(line)
+    if not lines:
+        return None
+    scanline = np.mean(lines, axis=0)
     return scanline
 
 
 def _scanline_to_bits(scanline):
+    if scanline is None:
+        return None, 0
     if scanline.dtype != np.uint8:
-        scanline = (scanline * 255).astype(np.uint8)
+        mx = np.max(scanline)
+        if mx > 1.0:
+            scanline = scanline.astype(np.uint8)
+        else:
+            scanline = (scanline * 255).astype(np.uint8)
+    otsu_ret, _ = cv2.threshold(scanline, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    threshold = otsu_ret
     local_min = np.min(scanline)
     local_max = np.max(scanline)
     if local_max - local_min < 30:
         return None, 0
-    threshold = (local_min + local_max) // 2
     bits = (scanline > threshold).astype(np.uint8)
-    return bits, threshold
+    return bits, int(threshold)
 
 
 def _find_barcode_span(bits):
@@ -77,7 +118,10 @@ def _find_barcode_span(bits):
         return None, None
     first_black = int(black_indices[0])
     last_black = int(black_indices[-1])
-    module_width = (last_black - first_black + 1) / 95.0
+    span = last_black - first_black + 1
+    if span < 30:
+        return None, None
+    module_width = span / 95.0
     return first_black, module_width
 
 
@@ -99,6 +143,19 @@ def _sample_modules(bits, first_black, module_width, num_modules=95):
     return ''.join(str(b) for b in sampled)
 
 
+def _refine_module_width(bit_str):
+    start_guard = bit_str[:3]
+    if start_guard != START_GUARD:
+        return bit_str
+    first_bar_end = bit_str.find('0')
+    if first_bar_end > 0:
+        pass
+    middle = bit_str[45:50]
+    if middle == CENTER_GUARD:
+        pass
+    return bit_str
+
+
 def _try_decode(bits):
     first_black, module_width = _find_barcode_span(bits)
     if first_black is None:
@@ -106,6 +163,7 @@ def _try_decode(bits):
     bit_str = _sample_modules(bits, first_black, module_width, 95)
     if bit_str is None:
         return None, 0.0
+    bit_str = _refine_module_width(bit_str)
     barcode = _decode_from_bit_string(bit_str)
     return barcode, bit_str
 
@@ -165,7 +223,7 @@ def _compute_confidence(barcode_str, bit_str, edge_strength):
     score = 0.0
     if barcode_str and validate_checksum(barcode_str):
         score += 40.0
-    if bit_str:
+    if bit_str and len(bit_str) >= 95:
         start_match = sum(1 for a, b in zip(bit_str[:3], START_GUARD) if a == b) / 3
         center_match = sum(1 for a, b in zip(bit_str[45:50], CENTER_GUARD) if a == b) / 5
         end_match = sum(1 for a, b in zip(bit_str[-3:], END_GUARD) if a == b) / 3
@@ -181,12 +239,17 @@ def _compute_confidence(barcode_str, bit_str, edge_strength):
 def decode_barcode(barcode_image):
     if barcode_image is None or barcode_image.size == 0:
         return None, 0.0
+    result, conf = decode_zbar(barcode_image)
+    if result:
+        return result, max(conf, 80.0)
     if len(barcode_image.shape) == 3:
         gray = cv2.cvtColor(barcode_image, cv2.COLOR_BGR2GRAY)
     else:
         gray = barcode_image.copy()
     edge_strength = _measure_edge_strength(gray)
     scanline = _extract_scanline(gray)
+    if scanline is None:
+        return None, 0.0
     bits, _ = _scanline_to_bits(scanline)
     if bits is None:
         return None, 0.0
@@ -194,6 +257,16 @@ def decode_barcode(barcode_image):
     if barcode is None:
         flipped_bits = 1 - bits
         barcode, bit_str = _try_decode(flipped_bits)
+    if barcode is None:
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        enhanced = clahe.apply(gray)
+        scanline2 = _extract_scanline(enhanced)
+        if scanline2 is not None:
+            bits2, _ = _scanline_to_bits(scanline2)
+            if bits2 is not None:
+                barcode, bit_str = _try_decode(bits2)
+                if barcode is None:
+                    barcode, bit_str = _try_decode(1 - bits2)
     confidence = _compute_confidence(barcode, bit_str, edge_strength)
     return barcode, confidence
 
@@ -202,4 +275,3 @@ def _measure_edge_strength(gray):
     sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
     abs_sobel = np.abs(sobelx)
     return float(np.mean(abs_sobel))
-

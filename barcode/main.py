@@ -10,7 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 
-from preprocess import preprocess
 from localization import locate_barcode
 from correction import correct_and_extract
 from decoder import decode_barcode
@@ -47,7 +46,6 @@ class HealthResponse(BaseModel):
 
 
 def process_frame(frame):
-    binary = preprocess(frame)
     rect, box = locate_barcode(frame)
     if rect is None or box is None:
         return None, 0.0, "No barcode detected"

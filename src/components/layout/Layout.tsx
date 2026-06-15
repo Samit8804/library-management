@@ -33,9 +33,16 @@ export function Layout() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-900 flex">
+    <div className="min-h-screen bg-navy-900 flex relative overflow-hidden">
+      {/* Glassmorphism background orbs */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/3 -right-32 w-80 h-80 bg-purple-accent/5 rounded-full blur-[100px]" />
+        <div className="absolute top-2/3 left-1/3 w-64 h-64 bg-cyan-accent/4 rounded-full blur-[80px]" />
+        <div className="absolute -top-20 right-1/4 w-72 h-72 bg-accent/4 rounded-full blur-[90px]" />
+      </div>
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative">
         <Header onMenuClick={() => setSidebarOpen(true)} />
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
           <Outlet />

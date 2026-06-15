@@ -10,7 +10,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const signOut = useAuth((s) => s.signOut)
 
   return (
-    <header className="h-16 bg-surface border-b border-border/50 flex items-center justify-between px-4 lg:px-6">
+    <header className="h-16 bg-navy-800/40 backdrop-blur-xl border-b border-border/40 flex items-center justify-between px-4 lg:px-6">
       <button onClick={onMenuClick} className="lg:hidden p-2 text-text-muted hover:text-text-secondary rounded-lg hover:bg-surface-light">
         <Menu className="h-5 w-5" />
       </button>

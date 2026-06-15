@@ -164,18 +164,18 @@ export function StudentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Students</h1>
-        <p className="text-gray-500 mt-1">Manage student records</p>
+        <h1 className="text-2xl font-bold text-text-primary">Students</h1>
+        <p className="text-text-muted mt-1">Manage student records</p>
       </div>
 
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
           <input
             placeholder="Search by name, form number, or enrollment..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="block w-full rounded-lg border border-gray-300 px-3 py-2 pl-10 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-gray-900"
+            className="block w-full rounded-lg border border-border px-3 py-2 pl-10 text-sm shadow-sm focus:border-accent/50 focus:ring-1 focus:ring-accent/30 text-text-primary"
           />
         </div>
         <Button onClick={openAddModal}>
@@ -280,7 +280,7 @@ export function StudentsPage() {
         onClose={() => setDeleteConfirm(null)}
         title="Delete Student"
       >
-        <p className="text-gray-600 mb-6">
+        <p className="text-text-secondary mb-6">
           Are you sure you want to delete <strong>{deleteConfirm?.name}</strong>? This action cannot be undone.
         </p>
         <div className="flex justify-end gap-3">

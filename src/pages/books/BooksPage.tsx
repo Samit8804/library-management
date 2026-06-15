@@ -217,8 +217,8 @@ export function BooksPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Books</h1>
-          <p className="text-gray-500 mt-1">Manage book inventory</p>
+          <h1 className="text-2xl font-bold text-text-primary">Books</h1>
+          <p className="text-text-muted mt-1">Manage book inventory</p>
         </div>
         <Button onClick={openAddModal}>
           <Plus className="h-4 w-4" />
@@ -233,19 +233,19 @@ export function BooksPage() {
       <Card>
         <CardContent className="p-6">
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
             <input
               type="text"
               placeholder="Search by title, author, ISBN, or Book ID..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="block w-full rounded-lg border border-gray-300 pl-10 pr-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="block w-full rounded-lg border border-border pl-10 pr-3 py-2 text-sm shadow-sm focus:border-accent/50 focus:ring-1 focus:ring-accent/30"
             />
           </div>
 
-          <details className="mb-4 text-sm text-gray-500">
+          <details className="mb-4 text-sm text-text-muted">
             <summary className="cursor-pointer hover:text-gray-700">Using an external barcode scanner app?</summary>
-            <div className="mt-2 p-3 bg-gray-50 rounded-lg text-xs space-y-1">
+            <div className="mt-2 p-3 bg-surface rounded-lg text-xs space-y-1">
               <p>Install <strong>QR &amp; Barcode Scanner</strong> from Play Store.</p>
               <p>Set URL template to: <code className="bg-gray-200 px-1 rounded">https://library-management-flame-iota.vercel.app/scan/%s</code></p>
               <p>When you scan a book, it will open the site and look up the book by ISBN.</p>
@@ -395,7 +395,7 @@ export function BooksPage() {
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-gray-600">
+          <p className="text-text-secondary">
             Are you sure you want to delete this book? This action cannot be undone.
           </p>
           <div className="flex justify-end gap-3">

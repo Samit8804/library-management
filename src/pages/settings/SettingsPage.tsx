@@ -64,8 +64,8 @@ export function SettingsPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <ShieldAlert className="h-16 w-16 text-red-400 mb-4" />
-        <h2 className="text-xl font-semibold text-gray-900">Access Denied</h2>
-        <p className="text-gray-500 mt-2">Only administrators can access settings.</p>
+        <h2 className="text-xl font-semibold text-text-primary">Access Denied</h2>
+        <p className="text-text-muted mt-2">Only administrators can access settings.</p>
       </div>
     )
   }
@@ -74,8 +74,8 @@ export function SettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-500 mt-1">Configure library policies</p>
+          <h1 className="text-2xl font-bold text-text-primary">Settings</h1>
+          <p className="text-text-muted mt-1">Configure library policies</p>
         </div>
         {defaultSettings.every((ds) => values[ds.key] !== undefined) && (
           <Button onClick={handleSaveAll} loading={updateMutation.isPending}>
@@ -89,7 +89,7 @@ export function SettingsPage() {
         {defaultSettings.map((setting) => (
           <Card key={setting.key}>
             <CardContent className="p-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">{setting.label}</label>
+              <label className="block text-sm font-medium text-text-secondary mb-2">{setting.label}</label>
               <div className="flex gap-3">
                 <Input
                   type={setting.type}

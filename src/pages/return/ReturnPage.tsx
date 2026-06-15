@@ -98,15 +98,15 @@ export function ReturnPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Return Book</h1>
-        <p className="text-gray-500 mt-1">Process book returns</p>
+        <h1 className="text-2xl font-bold text-text-primary">Return Book</h1>
+        <p className="text-text-muted mt-1">Process book returns</p>
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Search className="h-5 w-5 text-indigo-600" />
-            <h2 className="text-lg font-semibold text-gray-900">Search Book</h2>
+            <Search className="h-5 w-5 text-accent" />
+            <h2 className="text-lg font-semibold text-text-primary">Search Book</h2>
           </div>
         </CardHeader>
         <CardContent>
@@ -129,9 +129,9 @@ export function ReturnPage() {
 
       {book && !transaction && (
         <Card>
-          <CardContent className="py-8 text-center text-gray-500">
+          <CardContent className="py-8 text-center text-text-muted">
             <BookOpen className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-            <p className="font-medium text-gray-900">{book.title}</p>
+            <p className="font-medium text-text-primary">{book.title}</p>
             <p className="text-sm">No active transaction found for this book</p>
           </CardContent>
         </Card>
@@ -142,31 +142,31 @@ export function ReturnPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-indigo-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Book Details</h2>
+                <BookOpen className="h-5 w-5 text-accent" />
+                <h2 className="text-lg font-semibold text-text-primary">Book Details</h2>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
-              <p className="font-semibold text-gray-900 text-lg">{book.title}</p>
-              <p className="text-sm text-gray-600">by {book.author}</p>
-              <p className="text-sm text-gray-600">ISBN: {book.isbn}</p>
-              <p className="text-sm text-gray-600">Book ID: {book.book_id}</p>
+              <p className="font-semibold text-text-primary text-lg">{book.title}</p>
+              <p className="text-sm text-text-secondary">by {book.author}</p>
+              <p className="text-sm text-text-secondary">ISBN: {book.isbn}</p>
+              <p className="text-sm text-text-secondary">Book ID: {book.book_id}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-indigo-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Borrower Details</h2>
+                <User className="h-5 w-5 text-accent" />
+                <h2 className="text-lg font-semibold text-text-primary">Borrower Details</h2>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
               {transaction.student && (
                 <>
-                  <p className="font-semibold text-gray-900">{transaction.student.name}</p>
-                  <p className="text-sm text-gray-600">Form: {transaction.student.form_number}</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="font-semibold text-text-primary">{transaction.student.name}</p>
+                  <p className="text-sm text-text-secondary">Form: {transaction.student.form_number}</p>
+                  <p className="text-sm text-text-secondary">
                     {transaction.student.course} - {transaction.student.branch}
                   </p>
                 </>
@@ -177,28 +177,28 @@ export function ReturnPage() {
           <Card className="lg:col-span-2">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-indigo-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Transaction Details</h2>
+                <Calendar className="h-5 w-5 text-accent" />
+                <h2 className="text-lg font-semibold text-text-primary">Transaction Details</h2>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">Issue Date</p>
-                  <p className="font-medium text-gray-900">{formatDate(transaction.issue_date)}</p>
+                  <p className="text-sm text-text-muted">Issue Date</p>
+                  <p className="font-medium text-text-primary">{formatDate(transaction.issue_date)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Due Date</p>
-                  <p className="font-medium text-gray-900">{formatDate(transaction.due_date)}</p>
+                  <p className="text-sm text-text-muted">Due Date</p>
+                  <p className="font-medium text-text-primary">{formatDate(transaction.due_date)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Days Overdue</p>
+                  <p className="text-sm text-text-muted">Days Overdue</p>
                   <p className={`font-medium ${fineInfo && fineInfo.daysOverdue > GRACE_PERIOD ? 'text-red-600' : 'text-green-600'}`}>
                     {fineInfo ? Math.max(0, fineInfo.daysOverdue - GRACE_PERIOD) : 0} days
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Fine Amount</p>
+                  <p className="text-sm text-text-muted">Fine Amount</p>
                   <p className={`font-medium ${fineInfo && fineInfo.fine > 0 ? 'text-red-600' : 'text-green-600'}`}>
                     {fineInfo && fineInfo.fine > 0 ? formatCurrency(fineInfo.fine) : 'No fine'}
                   </p>

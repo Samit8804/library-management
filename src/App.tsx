@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Layout } from './components/layout/Layout'
 import { LoginPage } from './pages/auth/LoginPage'
+import { LandingPage } from './pages/landing/LandingPage'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { StudentsPage } from './pages/students/StudentsPage'
 import { BooksPage } from './pages/books/BooksPage'
@@ -15,6 +16,7 @@ import { ScannerReaderPopup } from './pages/scanner/ScannerReaderPopup'
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/scanner-reader" element={<ScannerReaderPopup />} />
       <Route path="/scan/:code" element={<ScanCodePage />} />
@@ -28,7 +30,7 @@ export default function App() {
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

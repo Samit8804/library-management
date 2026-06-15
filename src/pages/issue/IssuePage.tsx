@@ -121,16 +121,16 @@ export function IssuePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Issue Book</h1>
-        <p className="text-gray-500 mt-1">Issue books to students</p>
+        <h1 className="text-2xl font-bold text-text-primary">Issue Book</h1>
+        <p className="text-text-muted mt-1">Issue books to students</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <User className="h-5 w-5 text-indigo-600" />
-              <h2 className="text-lg font-semibold text-gray-900">Identify Student</h2>
+              <User className="h-5 w-5 text-accent" />
+              <h2 className="text-lg font-semibold text-text-primary">Identify Student</h2>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -157,8 +157,8 @@ export function IssuePage() {
                     <CardContent className="py-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-gray-900">{student.name}</p>
-                          <p className="text-sm text-gray-500">{student.form_number}</p>
+                          <p className="font-medium text-text-primary">{student.name}</p>
+                          <p className="text-sm text-text-muted">{student.form_number}</p>
                         </div>
                         <Badge variant={student.status === 'active' ? 'success' : 'danger'}>
                           {student.status}
@@ -171,19 +171,19 @@ export function IssuePage() {
             )}
 
             {selectedStudent && (
-              <Card className="border-indigo-300 bg-indigo-50">
+              <Card className="border-indigo-300 bg-accent/10">
                 <CardContent className="py-3">
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <p className="font-semibold text-gray-900">{selectedStudent.name}</p>
+                        <p className="font-semibold text-text-primary">{selectedStudent.name}</p>
                         <Badge variant={selectedStudent.status === 'active' ? 'success' : 'danger'}>
                           {selectedStudent.status}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600">Form: {selectedStudent.form_number}</p>
-                      <p className="text-sm text-gray-600">Enrollment: {selectedStudent.enrollment_number}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-text-secondary">Form: {selectedStudent.form_number}</p>
+                      <p className="text-sm text-text-secondary">Enrollment: {selectedStudent.enrollment_number}</p>
+                      <p className="text-sm text-text-secondary">
                         {selectedStudent.course} - {selectedStudent.branch} (Year {selectedStudent.year})
                       </p>
                       {selectedStudent.total_fine > 0 && (
@@ -205,8 +205,8 @@ export function IssuePage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-indigo-600" />
-              <h2 className="text-lg font-semibold text-gray-900">Scan / Select Book</h2>
+              <BookOpen className="h-5 w-5 text-accent" />
+              <h2 className="text-lg font-semibold text-text-primary">Scan / Select Book</h2>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -236,8 +236,8 @@ export function IssuePage() {
                     <CardContent className="py-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-gray-900">{book.title}</p>
-                          <p className="text-sm text-gray-500">{book.author}</p>
+                          <p className="font-medium text-text-primary">{book.title}</p>
+                          <p className="text-sm text-text-muted">{book.author}</p>
                         </div>
                         <Badge variant={book.available_copies > 0 ? 'success' : 'danger'}>
                           {book.available_copies} / {book.quantity}
@@ -250,14 +250,14 @@ export function IssuePage() {
             )}
 
             {selectedBook && (
-              <Card className="border-indigo-300 bg-indigo-50">
+              <Card className="border-indigo-300 bg-accent/10">
                 <CardContent className="py-3">
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
-                      <p className="font-semibold text-gray-900">{selectedBook.title}</p>
-                      <p className="text-sm text-gray-600">by {selectedBook.author}</p>
-                      <p className="text-sm text-gray-600">ISBN: {selectedBook.isbn}</p>
-                      <p className="text-sm text-gray-600">Book ID: {selectedBook.book_id}</p>
+                      <p className="font-semibold text-text-primary">{selectedBook.title}</p>
+                      <p className="text-sm text-text-secondary">by {selectedBook.author}</p>
+                      <p className="text-sm text-text-secondary">ISBN: {selectedBook.isbn}</p>
+                      <p className="text-sm text-text-secondary">Book ID: {selectedBook.book_id}</p>
                       <Badge variant={selectedBook.available_copies > 0 ? 'success' : 'danger'}>
                         {selectedBook.available_copies} copy(ies) available
                       </Badge>
@@ -278,20 +278,20 @@ export function IssuePage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-green-600" />
-              <h2 className="text-lg font-semibold text-gray-900">Confirm Issue</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Confirm Issue</h2>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <p className="text-sm text-gray-500">Student</p>
-                <p className="font-medium text-gray-900">{selectedStudent.name}</p>
-                <p className="text-sm text-gray-600">{selectedStudent.form_number}</p>
+                <p className="text-sm text-text-muted">Student</p>
+                <p className="font-medium text-text-primary">{selectedStudent.name}</p>
+                <p className="text-sm text-text-secondary">{selectedStudent.form_number}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-gray-500">Book</p>
-                <p className="font-medium text-gray-900">{selectedBook.title}</p>
-                <p className="text-sm text-gray-600">{selectedBook.author}</p>
+                <p className="text-sm text-text-muted">Book</p>
+                <p className="font-medium text-text-primary">{selectedBook.title}</p>
+                <p className="text-sm text-text-secondary">{selectedBook.author}</p>
               </div>
             </div>
 
@@ -304,7 +304,7 @@ export function IssuePage() {
                   onChange={(e) => setDueDate(e.target.value)}
                 />
               </div>
-              <div className="text-sm text-gray-500 pb-2">
+              <div className="text-sm text-text-muted pb-2">
                 <Calendar className="inline h-4 w-4 mr-1" />
                 {formatDate(dueDate)}
               </div>

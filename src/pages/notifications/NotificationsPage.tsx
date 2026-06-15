@@ -126,13 +126,13 @@ export function NotificationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-        <p className="text-gray-500 mt-1">Send and manage notifications</p>
+        <h1 className="text-2xl font-bold text-text-primary">Notifications</h1>
+        <p className="text-text-muted mt-1">Send and manage notifications</p>
       </div>
 
       <Card>
         <CardHeader>
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
             <Send className="h-5 w-5 text-indigo-500" />
             Send Bulk Notification
           </h3>
@@ -151,7 +151,7 @@ export function NotificationsPage() {
 
           {audience === 'custom' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Select Students</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Select Students</label>
               <Button
                 variant="secondary"
                 size="sm"
@@ -166,12 +166,12 @@ export function NotificationsPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+            <label className="block text-sm font-medium text-text-secondary mb-1">Message</label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-accent/50 focus:ring-1 focus:ring-accent/30"
               placeholder="Type your notification message here..."
             />
           </div>
@@ -187,7 +187,7 @@ export function NotificationsPage() {
 
       <Card>
         <CardHeader>
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
             <Mail className="h-5 w-5 text-indigo-500" />
             Email Logs
           </h3>
@@ -222,58 +222,58 @@ export function NotificationsPage() {
       <Modal open={showStudentPicker} onClose={() => setShowStudentPicker(false)} title="Select Students" size="xl">
         <div className="space-y-4">
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-2.5 h-5 w-5 text-text-muted" />
             <input
               value={searchQuery}
               onChange={(e) => handleStudentSearch(e.target.value)}
               placeholder="Search students..."
-              className="block w-full rounded-lg border border-gray-300 pl-10 pr-3 py-2 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="block w-full rounded-lg border border-border pl-10 pr-3 py-2 text-sm focus:border-accent/50 focus:ring-1 focus:ring-accent/30"
             />
           </div>
 
-          <div className="max-h-80 overflow-y-auto divide-y divide-gray-100 border border-gray-200 rounded-lg">
+          <div className="max-h-80 overflow-y-auto divide-y divide-gray-100 border border-border/50 rounded-lg">
             {searchResults.length > 0
               ? searchResults.map((s) => (
                   <label
                     key={s.id}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-surface-light cursor-pointer"
                   >
                     <input
                       type="checkbox"
                       checked={!!selectedStudents.find((ss) => ss.id === s.id)}
                       onChange={() => toggleStudent(s)}
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      className="rounded border-border text-accent focus:ring-accent/30"
                     />
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{s.name}</p>
-                      <p className="text-xs text-gray-500">{s.form_number} - {s.email}</p>
+                      <p className="text-sm font-medium text-text-primary">{s.name}</p>
+                      <p className="text-xs text-text-muted">{s.form_number} - {s.email}</p>
                     </div>
                   </label>
                 ))
               : students?.map((s) => (
                   <label
                     key={s.id}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-surface-light cursor-pointer"
                   >
                     <input
                       type="checkbox"
                       checked={!!selectedStudents.find((ss) => ss.id === s.id)}
                       onChange={() => toggleStudent(s)}
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      className="rounded border-border text-accent focus:ring-accent/30"
                     />
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{s.name}</p>
-                      <p className="text-xs text-gray-500">{s.form_number} - {s.email}</p>
+                      <p className="text-sm font-medium text-text-primary">{s.name}</p>
+                      <p className="text-xs text-text-muted">{s.form_number} - {s.email}</p>
                     </div>
                   </label>
                 ))}
             {searchResults.length === 0 && students?.length === 0 && (
-              <p className="text-center py-8 text-gray-500 text-sm">No students found</p>
+              <p className="text-center py-8 text-text-muted text-sm">No students found</p>
             )}
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">{selectedStudents.length} selected</span>
+            <span className="text-sm text-text-secondary">{selectedStudents.length} selected</span>
             <Button onClick={() => setShowStudentPicker(false)}>Done</Button>
           </div>
         </div>

@@ -28,19 +28,19 @@ export function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
-        <p className="text-gray-500 mt-1">Generate and export reports</p>
+        <h1 className="text-2xl font-bold text-text-primary">Reports</h1>
+        <p className="text-text-muted mt-1">Generate and export reports</p>
       </div>
 
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
+      <div className="flex gap-1 bg-surface-light p-1 rounded-lg w-fit">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === tab.key
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-surface text-text-primary shadow-sm'
+                : 'text-text-secondary hover:text-text-primary'
             }`}
           >
             <tab.icon className="h-4 w-4" />
@@ -128,16 +128,16 @@ function StudentReports() {
       <Card>
         <CardContent className="p-6">
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-2.5 h-5 w-5 text-text-muted" />
             <input
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Search by name, form number, or enrollment..."
-              className="block w-full rounded-lg border border-gray-300 pl-10 pr-3 py-2 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="block w-full rounded-lg border border-border pl-10 pr-3 py-2 text-sm focus:border-accent/50 focus:ring-1 focus:ring-accent/30"
             />
           </div>
           {searchResults.length > 0 && (
-            <div className="mt-2 border border-gray-200 rounded-lg divide-y max-h-60 overflow-y-auto">
+            <div className="mt-2 border border-border/50 rounded-lg divide-y max-h-60 overflow-y-auto">
               {searchResults.map((s) => (
                 <button
                   key={s.id}
@@ -146,11 +146,11 @@ function StudentReports() {
                     setSearchQuery(`${s.name} (${s.form_number})`)
                     setSearchResults([])
                   }}
-                  className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm"
+                  className="w-full text-left px-4 py-3 hover:bg-surface-light text-sm"
                 >
-                  <span className="font-medium text-gray-900">{s.name}</span>
-                  <span className="text-gray-500 ml-2">{s.form_number}</span>
-                  <span className="text-gray-400 ml-2">{s.course} - {s.branch}</span>
+                  <span className="font-medium text-text-primary">{s.name}</span>
+                  <span className="text-text-muted ml-2">{s.form_number}</span>
+                  <span className="text-text-muted ml-2">{s.course} - {s.branch}</span>
                 </button>
               ))}
             </div>
@@ -164,8 +164,8 @@ function StudentReports() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{selectedStudent.name}</h3>
-                  <p className="text-sm text-gray-500">{selectedStudent.form_number} | {selectedStudent.course} - {selectedStudent.branch}</p>
+                  <h3 className="text-lg font-semibold text-text-primary">{selectedStudent.name}</h3>
+                  <p className="text-sm text-text-muted">{selectedStudent.form_number} | {selectedStudent.course} - {selectedStudent.branch}</p>
                 </div>
                 <Button onClick={exportPDF} variant="secondary" size="sm">
                   <FileText className="h-4 w-4" />
@@ -189,7 +189,7 @@ function StudentReports() {
                 </div>
               </div>
 
-              <h4 className="font-medium text-gray-900 mb-3">Borrowing History</h4>
+              <h4 className="font-medium text-text-primary mb-3">Borrowing History</h4>
               <Table
                 columns={[
                   { key: 'book', header: 'Book', render: (t: Transaction) => t.book?.title || 'N/A' },
@@ -281,7 +281,7 @@ function BookReports() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Most Borrowed Books</h3>
+            <h3 className="text-lg font-semibold text-text-primary">Most Borrowed Books</h3>
             <Button onClick={() => exportExcel('most')} variant="secondary" size="sm">
               <FileSpreadsheet className="h-4 w-4" />
               Export to Excel
@@ -306,7 +306,7 @@ function BookReports() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Least Borrowed Books</h3>
+            <h3 className="text-lg font-semibold text-text-primary">Least Borrowed Books</h3>
             <Button onClick={() => exportExcel('least')} variant="secondary" size="sm">
               <FileSpreadsheet className="h-4 w-4" />
               Export to Excel
@@ -331,7 +331,7 @@ function BookReports() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Inventory Status</h3>
+            <h3 className="text-lg font-semibold text-text-primary">Inventory Status</h3>
             <Button onClick={() => exportExcel('inventory')} variant="secondary" size="sm">
               <FileSpreadsheet className="h-4 w-4" />
               Export to Excel
@@ -460,7 +460,7 @@ function FinancialReports() {
           </div>
         </div>
 
-        <h4 className="font-medium text-gray-900 mb-3">Transaction History</h4>
+        <h4 className="font-medium text-text-primary mb-3">Transaction History</h4>
         <Table
           columns={[
             { key: 'student', header: 'Student', render: (t: Transaction) => t.student?.name || 'N/A' },

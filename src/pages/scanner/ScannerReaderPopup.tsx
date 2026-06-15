@@ -132,7 +132,7 @@ export function ScannerReaderPopup() {
             <ScanLine className="h-6 w-6 text-indigo-400" />
             Barcode Scanner
           </h1>
-          <p className="text-gray-400 text-sm mt-1">Point camera at a barcode to scan</p>
+          <p className="text-text-muted text-sm mt-1">Point camera at a barcode to scan</p>
         </div>
 
         <div className="relative w-full aspect-square bg-gray-900 rounded-2xl overflow-hidden mb-4">
@@ -144,7 +144,7 @@ export function ScannerReaderPopup() {
           />
 
           {!scanning && !error && (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-600 z-10">
+            <div className="absolute inset-0 flex items-center justify-center text-text-secondary z-10">
               <div className="text-center">
                 <Camera className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p className="text-sm">Camera off</p>
@@ -173,21 +173,21 @@ export function ScannerReaderPopup() {
               <div className="text-center">
                 <div className="animate-spin h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full mx-auto mb-3" />
                 <p className="text-white font-medium">Barcode: {code}</p>
-                <p className="text-gray-400 text-sm">Sending to library...</p>
+                <p className="text-text-muted text-sm">Sending to library...</p>
               </div>
             </div>
           )}
         </div>
 
         {status && scanning && (
-          <p className="text-center text-sm text-gray-400 mb-4">{status}</p>
+          <p className="text-center text-sm text-text-muted mb-4">{status}</p>
         )}
 
         <div className="flex gap-3">
           {!scanning ? (
             <button
               onClick={startScanner}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors"
             >
               <Camera className="h-5 w-5" />
               Start Scanning
@@ -209,7 +209,7 @@ export function ScannerReaderPopup() {
           </button>
         </div>
 
-        <p className="text-xs text-gray-600 text-center mt-4">
+        <p className="text-xs text-text-secondary text-center mt-4">
           Using native camera + Python barcode decoder
         </p>
       </div>

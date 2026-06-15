@@ -104,13 +104,13 @@ export function ScanCodePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-surface flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardContent className="p-6 text-center">
           {loading && (
             <div className="py-8">
               <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
-              <p className="text-gray-600">Looking up code...</p>
+              <p className="text-text-secondary">Looking up code...</p>
             </div>
           )}
 
@@ -118,7 +118,7 @@ export function ScanCodePage() {
             <div className="py-8">
               <XCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
               <p className="text-red-600 font-medium mb-2">{error}</p>
-              <p className="text-sm text-gray-500 mb-4">Code: "{code}"</p>
+              <p className="text-sm text-text-muted mb-4">Code: "{code}"</p>
               <Link to="/books"><Button>Go to Books</Button></Link>
             </div>
           )}
@@ -129,8 +129,8 @@ export function ScanCodePage() {
               <CheckCircle className="h-6 w-6 text-green-500 mx-auto mb-2" />
               <p className="text-sm text-green-600 mb-2">Book found! Redirecting...</p>
               <h2 className="text-xl font-bold mb-1">{result.data.title}</h2>
-              <p className="text-gray-600 mb-1">{result.data.author}</p>
-              <p className="text-sm text-gray-500 mb-4">ID: {result.data.book_id} | ISBN: {result.data.isbn}</p>
+              <p className="text-text-secondary mb-1">{result.data.author}</p>
+              <p className="text-sm text-text-muted mb-4">ID: {result.data.book_id} | ISBN: {result.data.isbn}</p>
               <Badge variant={result.data.available_copies > 0 ? 'success' : 'danger'}>
                 {result.data.available_copies > 0 ? 'Available' : 'Issued'}
               </Badge>
@@ -147,7 +147,7 @@ export function ScanCodePage() {
               <User className="h-16 w-16 text-green-500 mx-auto mb-4" />
               <CheckCircle className="h-6 w-6 text-green-500 mx-auto mb-2" />
               <h2 className="text-xl font-bold mb-1">{result.data.name}</h2>
-              <p className="text-gray-600 mb-1">Form: {result.data.form_number}</p>
+              <p className="text-text-secondary mb-1">Form: {result.data.form_number}</p>
               <Badge variant={result.data.status === 'active' ? 'success' : 'danger'}>{result.data.status}</Badge>
             </div>
           )}
@@ -155,7 +155,7 @@ export function ScanCodePage() {
           {isbn && !result && (
             <div className="py-4 text-left">
               <h2 className="text-lg font-semibold mb-1">Add New Book</h2>
-              <p className="text-sm text-gray-500 mb-4">ISBN detected — enter the details below:</p>
+              <p className="text-sm text-text-muted mb-4">ISBN detected — enter the details below:</p>
               <div className="space-y-3">
                 <Input label="Book ID" value={editBookId} onChange={(e) => setEditBookId(e.target.value)} />
                 <Input label="ISBN" value={isbn} disabled />

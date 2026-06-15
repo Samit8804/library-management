@@ -8,12 +8,15 @@ def _sobel_gradient(gray):
     return abs_sobel
 
 
-def _morphological_operations(edge_image):
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (17, 5))
+def _morphological_operations(edge_image, image_width):
+    k = max(7, image_width // 25)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (k, max(3, k // 4)))
     closed = cv2.morphologyEx(edge_image, cv2.MORPH_CLOSE, kernel)
-    kernel_dilate = cv2.getStructuringElement(cv2.MORPH_RECT, (21, 7))
+    k_dilate = max(7, image_width // 20)
+    kernel_dilate = cv2.getStructuringElement(cv2.MORPH_RECT, (k_dilate, max(3, k_dilate // 4)))
     dilated = cv2.dilate(closed, kernel_dilate, iterations=2)
-    kernel_erode = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 3))
+    k_erode = max(3, image_width // 80)
+    kernel_erode = cv2.getStructuringElement(cv2.MORPH_RECT, (k_erode, max(1, k_erode // 3)))
     eroded = cv2.erode(dilated, kernel_erode, iterations=1)
     return eroded
 
@@ -29,25 +32,24 @@ def _find_barcode_contours(binary_mask, image_area):
         h = rect[1][1]
         if w == 0 or h == 0:
             continue
-        aspect_ratio = max(w, h) / min(w, h)
+        aspect = max(w, h) / min(w, h)
         area = w * h
         area_ratio = cv2.contourArea(contour) / image_area
-        candidates.append((rect, box, area, aspect_ratio, area_ratio, contour))
+        candidates.append((rect, box, area, aspect, area_ratio))
     if not candidates:
         return None
-    strict = [c for c in candidates if c[3] > 2.5 and c[2] > 500 and c[4] < 0.95]
-    if strict:
-        strict.sort(key=lambda x: x[2], reverse=True)
-        return strict[0]
-    relaxed = [c for c in candidates if c[3] > 1.2 and c[2] > 500 and c[4] < 0.98]
-    if relaxed:
-        relaxed.sort(key=lambda x: x[2], reverse=True)
-        return relaxed[0]
+    candidates.sort(key=lambda x: x[2], reverse=True)
+    for rect, box, area, aspect, area_ratio in candidates:
+        if aspect > 2.0 and area > 500 and area_ratio < 0.95:
+            return (rect, box, area, aspect, area_ratio)
+    for rect, box, area, aspect, area_ratio in candidates:
+        if aspect > 1.5 and area > 200 and area_ratio < 0.98:
+            return (rect, box, area, aspect, area_ratio)
     return None
 
 
 def _threshold_edges(edge_image):
-    _, binary = cv2.threshold(edge_image, 50, 255, cv2.THRESH_BINARY)
+    _, binary = cv2.threshold(edge_image, 30, 255, cv2.THRESH_BINARY)
     return binary
 
 
@@ -60,9 +62,9 @@ def locate_barcode(image):
     image_area = h * w
     edges = _sobel_gradient(gray)
     binary_edges = _threshold_edges(edges)
-    morph_mask = _morphological_operations(binary_edges)
+    morph_mask = _morphological_operations(binary_edges, w)
     result = _find_barcode_contours(morph_mask, image_area)
     if result is None:
         return None, None
-    rect, box, area, aspect, area_ratio, contour = result
+    rect, box, area, aspect, area_ratio = result
     return rect, box

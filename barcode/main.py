@@ -1,21 +1,16 @@
 import cv2
 import numpy as np
 import base64
-import io
 import os
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 
-from localization import locate_barcode
-from correction import correct_and_extract
-from decoder import decode_barcode
-from supabase_client import SupabaseClient
+from decoder import decode_full_frame
 
-app = FastAPI(title="EAN-13 Barcode Scanner", version="1.0.0")
+app = FastAPI(title="Barcode Scanner", version="1.0.0")
 
 origins_str = os.getenv("CORS_ORIGINS",
     "http://localhost:5173,http://localhost:5174,https://library-management-flame-iota.vercel.app")
@@ -29,7 +24,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-db = SupabaseClient()
+db = None
+try:
+    from supabase_client import SupabaseClient
+    db = SupabaseClient()
+except Exception as e:
+    print(f"Supabase not configured: {e}")
 
 
 class ScanResponse(BaseModel):
@@ -46,16 +46,14 @@ class HealthResponse(BaseModel):
 
 
 def process_frame(frame):
-    rect, box = locate_barcode(frame)
-    if rect is None or box is None:
-        return None, 0.0, "No barcode detected"
-    barcode_img = correct_and_extract(frame, rect, box)
-    if barcode_img is None or barcode_img.size == 0:
-        return None, 0.0, "Failed to extract barcode region"
-    barcode_str, confidence = decode_barcode(barcode_img)
-    if barcode_str is None:
-        return None, confidence, "Failed to decode barcode"
-    return barcode_str, confidence, None
+    h, w = frame.shape[:2]
+    if w > 1280 or h > 960:
+        scale = min(1280 / w, 960 / h)
+        frame = cv2.resize(frame, None, fx=scale, fy=scale)
+    barcode_str, confidence = decode_full_frame(frame)
+    if barcode_str:
+        return barcode_str, confidence, None
+    return None, 0.0, "No barcode detected"
 
 
 @app.post("/scan", response_model=ScanResponse)
@@ -80,7 +78,7 @@ async def scan_image(file: Optional[UploadFile] = File(None),
         if error:
             return ScanResponse(success=False, error=error, confidence=confidence)
         book_data = None
-        if db.is_ready():
+        if db and db.is_ready():
             book_data = db.lookup_book(barcode_str)
         return ScanResponse(
             success=True,
@@ -96,36 +94,7 @@ async def scan_image(file: Optional[UploadFile] = File(None),
 
 @app.get("/health", response_model=HealthResponse)
 async def health():
-    return HealthResponse(
-        status="running",
-        supabase_connected=db.is_ready()
-    )
-
-
-@app.post("/scan-camera")
-async def scan_camera():
-    from camera import CameraCapture
-    cam = CameraCapture(source=0)
-    if not cam.start():
-        return ScanResponse(success=False, error="Could not open camera")
-    import time
-    time.sleep(0.5)
-    frame = cam.read()
-    cam.stop()
-    if frame is None:
-        return ScanResponse(success=False, error="No frame captured")
-    barcode_str, confidence, error = process_frame(frame)
-    if error:
-        return ScanResponse(success=False, error=error, confidence=confidence)
-    book_data = None
-    if db.is_ready():
-        book_data = db.lookup_book(barcode_str)
-    return ScanResponse(
-        success=True,
-        barcode=barcode_str,
-        confidence=confidence,
-        book=book_data
-    )
+    return HealthResponse(status="running", supabase_connected=db is not None and db.is_ready())
 
 
 if __name__ == "__main__":

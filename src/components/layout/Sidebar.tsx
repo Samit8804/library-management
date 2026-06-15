@@ -25,11 +25,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     <>
       {open && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden" onClick={onClose} />}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-surface border-r border-border/50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-surface border-r border-border/50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto flex flex-col ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between h-16 px-6 border-b border-border/50">
+        <div className="flex items-center justify-between h-16 px-6 border-b border-border/50 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-purple-accent flex items-center justify-center">
               <BookOpen className="h-4 w-4 text-white" />
@@ -40,7 +40,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             <X className="h-5 w-5" />
           </button>
         </div>
-        <nav className="p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -59,9 +59,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             </NavLink>
           ))}
         </nav>
-        <div className="absolute bottom-4 left-4 right-4 p-4 rounded-lg bg-gradient-to-r from-accent/5 to-purple-accent/5 border border-accent/10">
-          <p className="text-xs text-text-muted">Library Management</p>
-          <p className="text-xs text-accent-light mt-1">v2.0.0</p>
+        <div className="shrink-0 p-4 border-t border-border/50">
+          <div className="rounded-lg bg-gradient-to-r from-accent/5 to-purple-accent/5 border border-accent/10 p-3">
+            <p className="text-xs text-text-muted">Library Management</p>
+            <p className="text-xs text-accent-light mt-0.5">v2.0.0</p>
+          </div>
         </div>
       </aside>
     </>

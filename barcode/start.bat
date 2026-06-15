@@ -1,4 +1,4 @@
 @echo off
 set SUPABASE_URL=https://tixkhtsguwaktjmbqngy.supabase.co
-set SUPABASE_KEY=sb_publishable_9IwIqSFGHmKbTOhR36hqSw_riBC9Ufd
+set SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpeGtodHNndXdha3RqbWJxbmd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODc3NjEsImV4cCI6MjA5NzA2Mzc2MX0.hh_mag7pXsKVBcWn2Q-eDdPskkrHnjidr5EwhJw52b4
 python main.py
